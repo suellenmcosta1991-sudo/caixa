@@ -1,0 +1,34 @@
+name: Gerar Executavel Windows
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar o Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Habilitar suporte Windows
+        run: flutter config --enable-windows-desktop
+
+      - name: Instalar dependências
+        run: flutter pub get
+
+      - name: Compilar aplicativo para Windows
+        run: flutter build windows --release
+
+      - name: Empacotar e Disponibilizar o Executável
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDV-Loja-Windows
+          path: build/windows/x64/runner/Release/
